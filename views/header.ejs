@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca livre</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <h1>Biblioteca livre</h1>
+        </div>
+        <ul id="menuList">
+            <li><a href="/book">Início</a></li>
+            <% if (req.session.userId) { %>
+                <% if (!req.session.isAdmin) { %>
+                    <li><a href="/mybooks">Meus livros</a></li>
+                    <li><a href="/book/add">Adicionar</a></li>
+                    <% } %>
+                        <% if (req.session.isAdmin) { %>
+                            <li><a href="/book/admin/book-request">
+                                    Solicitações de Adição (<%= req.session.pending %>)</a></li>
+                            <% } %>
+                                <% if (!req.session.isAdmin) { %>
+                                    <li><a href="/trade/reqlist">Solicitações</a></li>
+                                    <% } %>
+                                        <% if(!req.session.isAdmin) {%>
+                                            <li><a href="/trade/mytrades">Minhas trades</a></li>
+                                            <% } %>
+                                                <li><a href="/logout">Sair</a></li>
+                                                <li style="font-style:italic;
+                        color:white;
+                        font-size:14px;
+                        background:#f5f5f5;
+                          padding:10px;
+                          color:crimson;
+                          border-radius:4px;
+                          margin-top: 4px;">
+                                                    Sessão de: <%= req.session.name %>
+                                                </li>
+                                                <% } else { %>
+                                                    <li><a href="/login">Entrar</a></li>
+                                                    <% } %>
+        </ul>
+        <div class="menu-icon">
+            <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
+        </div>
+    </nav>

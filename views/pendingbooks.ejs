@@ -1,0 +1,163 @@
+<% include header.ejs %>
+
+    <div class="main-content">
+        <h2 style="margin-top:30px; color:crimson; margin-left:80px;">
+            Solicitações de novos livros</h2><br/>
+        <p>Página: </p>
+        <div class="div-pagination">
+            <ul class="pagination">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                        <a class="page-link" href="/book/admin/book-request?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>        
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Solicitado por</th>
+                        <th>Livro</th>
+                        <th>Capa</th>
+                        <th>Código</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% pendingBooks.forEach(book=> { %>
+                        <tr>
+                            <td class="limited-characters"><a href="" class="table-link">
+                                    <%= book.user.name %>
+                                </a></td>
+                            <td class="limited-characters">
+                                <a href="/book/<%= book.id %>" class="table-link">
+                                    <%= book.name%>
+                                </a>
+                            </td>
+                            <td>
+                                <img src="/book/<%= book.id %>/<%= book.image %>" alt="">
+                            </td>
+                            <td>
+                                <%= book.id %>
+                            </td>
+                            <td>
+                                <button class="table-btn-edit" data-id="<%= book.id %>">Aceitar</button>
+                                <button class="table-btn-remove" data-id="<%= book.id %>">Recusar</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <% include footer.ejs %>
+        <!-- Modal de aceitar -->
+        <div class="modal" id="modal-accept">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <h2>Aceitar solicitação?</h2>
+                <div class="modal-buttons">
+                    <form id="acceptBook" method="POST">
+                        <button type="submit" class="btn-confirm" id="confirmAcceptBtn">Sim</button>
+                    </form>
+                    <div>
+                        <button id="cancelAcceptBtn" class="btn-cancel">Não</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal de recusar -->
+        <div class="modal" id="modal-delete">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <h2>Recusar solicitação?</h2>
+                <div class="modal-buttons">
+                    <form id="rejectBook" method="POST">
+                        <button type="submit" class="btn-confirm" id="confirmRequestBtn">Sim</button>
+                    </form>
+                    <div>
+                        <button id="cancelRequestBtn" class="btn-cancel">Não</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Script para abrir e fechar o modal -->
+        <script>
+            // Abre o modal ao clicar no botão de aceitar
+            const acceptButtons = document.querySelectorAll('.table-btn-edit');
+            acceptButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const modal = document.getElementById('modal-accept');
+                    modal.style.display = 'block';
+                    // Configura o form do modal para enviar ao endpoint correto
+                    const form = document.getElementById('acceptBook');
+                    form.action = '/book/admin/accept-book/' + this.dataset.id;
+                });
+            });
+
+            // Abre o modal ao clicar no botão de recusar
+            const removeButtons = document.querySelectorAll('.table-btn-remove');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const modal = document.getElementById('modal-delete');
+                    modal.style.display = 'block';
+                    // Configura o form do modal para enviar ao endpoint correto
+                    const form = document.getElementById('rejectBook');
+                    form.action = '/book/admin/reject-book/' + this.dataset.id;
+                });
+            });
+
+            // Script para abrir e fechar o modal
+            const closeModalBtns = document.querySelectorAll('.close-modal');
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const modals = document.querySelectorAll('.modal');
+                    modals.forEach(modal => {
+                        modal.style.display = 'none';
+                    });
+                });
+            });
+
+            const cancelAcceptBtn = document.getElementById('cancelAcceptBtn');
+            cancelAcceptBtn.addEventListener('click', function () {
+                const modal = document.getElementById('modal-accept');
+                modal.style.display = 'none';
+            });
+
+            const cancelRequestBtns = document.querySelectorAll('.btn-cancel');
+            cancelRequestBtns.forEach(button => {
+                button.addEventListener('click', function () {
+                    const modal = document.getElementById('modal-delete');
+                    modal.style.display = 'none';
+                });
+            });
+
+            // Fecha o modal após a confirmação
+            const confirmRequestBtn = document.getElementById('confirmRequestBtn');
+            confirmRequestBtn.addEventListener('click', function () {
+                const form = document.getElementById('deleteTrade');
+                form.submit(); // Submete o formulário para a rota de exclusão
+                const modal = document.getElementById('modal-delete');
+                modal.style.display = 'none';
+            });
+
+            const confirmAcceptBtn = document.getElementById('confirmAcceptBtn');
+            confirmAcceptBtn.addEventListener('click', function () {
+                const form = document.getElementById('acceptTrade');
+                form.submit(); // Submete o formulário para a rota de aceitação
+                const modal = document.getElementById('modal-accept');
+                modal.style.display = 'none';
+            });
+
+            // Fecha o modal se o usuário clicar fora dele
+            window.addEventListener('click', function (event) {
+                const modals = document.querySelectorAll('.modal');
+                modals.forEach(modal => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            });
+
+        </script>

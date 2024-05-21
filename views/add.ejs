@@ -1,0 +1,49 @@
+<% include header.ejs %>
+    <div class="auth-container">
+        <div class="auth-left">
+            <br/>
+            <h2>Adicionar livro</h2>
+            <% if(bookAdded) { %>
+                <script>
+                    toastr.success(`Agora aguarde a aprovação de um administrador`)
+                </script>
+                <% } %>
+            <form  action="/book/add" method="POST" enctype="multipart/form-data">
+                <div class="input-div">
+                    <input type="text" placeholder="Título do livro" id="name" name="name">
+                    <i class="fas fa-heading"></i>
+                    <% let nameError = validationErrors.find(err => err.param === 'name') %>
+                    <% if (nameError) { %>
+                    <script>
+                        toastr.error(`<%=nameError.msg%>`)
+                    </script>
+                    <% } %>
+                </div>
+                <div class="input-div">
+                    <label for="category">Categoria</label>
+                    <select class="form-control" id="category" name="category">
+                        <option value="Educação">Educação</option>
+                        <option value="Ficção">Ficção</option>
+                    </select>
+                </div>
+                <div class="input-div">
+                    <input type="text"  placeholder="Autor" id="author" name="author">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-div">
+                    <textarea  placeholder="Descrição" id="description" name="description"></textarea></textarea>
+                    <i class="fas fa-file"></i>
+                </div>
+                <div class="input-div">
+                    <input type="file" class="form-control-file" id="image" name="image">
+                </div>
+                <div class="input-div">
+                    <button class="btn-on" type="submit">Adicionar</button>
+                </div>
+            </form>
+        </div>
+        <!-- <div class="auth-right">
+            <img src="/img/auth-book.svg" alt="auth" />
+        </div> -->
+    </div>
+    <% include footer.ejs %>

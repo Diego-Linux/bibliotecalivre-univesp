@@ -1,0 +1,115 @@
+<% include header.ejs %>
+    <% function formatDate(dateString) { const date=new Date(dateString); const
+        day=date.getDate().toString().padStart(2, '0' ); const month=(date.getMonth() + 1).toString().padStart(2, '0' );
+        const year=date.getFullYear().toString().slice(2); return `${day}/${month}/${year}`; } %>
+        <div class="main-details">
+            <div class="md-links">
+                <a href="#" onclick="history.back()">Voltar | </a>
+                <p>Livros > Categorias > <%= book.category %>
+                </p>
+            </div>
+            <div class="book-details">
+                <div class="book-image">
+                    <% if (book.image) { %>
+                        <img src="/<%= book.image %>" alt="">
+                        <% } else { %>
+                            <p>Imagem não disponível</p>
+                            <% } %>
+                </div>
+                <div class="book-info">
+                    <h2>
+                        <%= book.name %>
+                    </h2>
+                    <br />
+                    <p>
+                        <%= book.description %>
+                    </p>
+                </div>
+                <div class="book-action">
+                    <div class="book-property">
+                        <p><strong>Título: </strong>
+                            <%= book.name %>
+                        </p>
+                        <br />
+                        <p><strong>Categoria:</strong>
+                            <%= book.category %>
+                        </p>
+                        <br />
+                        <p><strong>Proprietário:</strong>
+                            <%= book.user.name %>
+                        </p>
+                        <br />
+                        <p><strong>Status:</strong>
+                            <%= book.status %>
+                        </p>
+                        <br />
+                        <p><strong>Autor: </strong><%= book.author %></p>
+                        <br />
+                        <p>
+                            <strong>Adicionado: </strong>
+                            <%= formatDate(book.createdAt) %>
+                        </p>
+                    </div>
+                    <% if (isUser && book.user.id===isUser) { %>
+                        <button class="btn" id="openModalBtn">Remover</button>
+                        <% } %>
+                            <% if (isUser && book.user.id !==isUser && !isAdmin) { %>
+                                <button class="btn" style="background-color:#198754"
+                                    onclick="window.location.href='/req/<%= book.id %>'">Solicitar</button>
+                                <!-- Fim do select para os livros do usuário logado -->
+                                <% } %>
+                </div>
+            </div>
+
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <h2>Deseja remover este livro?</h2>
+                <div class="modal-buttons">
+                    <% if (book.user.id===req.session.userId || req.session.isAdmin) { %>
+                        <!-- Verifica se o usuário logado é o proprietário -->
+                        <form action="/book/remove/<%= book.id %>" method="POST">
+                            <!-- Formulário para remover o livro -->
+                            <button class="btn-confirm" id="confirmRequestBtn">Confirmar</button>
+                        </form>
+                        <% } %>
+                            <div>
+                                <button id="cancelRequestBtn" class="btn-cancel">Cancelar</button>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <% include footer.ejs %>
+            <!-- Script para abrir e fechar o modal -->
+            <script>
+                // Função para abrir o modal
+                function openModal() {
+                    var modal = document.getElementById('modal');
+                    modal.style.display = 'block'; // Exibe o modal
+                }
+
+                // Função para fechar o modal
+                function closeModal() {
+                    var modal = document.getElementById('modal');
+                    modal.style.display = 'none'; // Oculta o modal
+                }
+
+                // Função para confirmar a exclusão
+                function confirmDelete() {
+                    var form = document.getElementById('deleteForm');
+                    form.submit(); // Submete o formulário para a rota de exclusão
+                    closeModal(); // Fecha o modal após a confirmação
+                }
+
+                // Função para cancelar a exclusão
+                function cancelDelete() {
+                    console.log('Exclusão cancelada');
+                    closeModal(); // Fecha o modal ao cancelar
+                }
+                // Adiciona eventos aos botões
+                document.getElementById('openModalBtn').addEventListener('click', openModal);
+                document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+                document.getElementById('confirmRequestBtn').addEventListener('click', confirmDelete);
+                document.getElementById('cancelRequestBtn').addEventListener('click', cancelDelete);
+            </script>

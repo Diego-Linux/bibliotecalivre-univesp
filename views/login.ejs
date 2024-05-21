@@ -1,0 +1,45 @@
+<% include header.ejs %>
+    <br />
+    <div class="auth-container">
+        <div class="auth-left">
+            <h1>Biblioteca livre</h1>
+            <h2>Acessar conta</h2>
+            <form action="/login" method="POST">
+                <div class="input-div">
+                    <input type="email" placeholder="Nome de usuário" id="email" name="email" value="<%= lastTypedEmail || '' %>">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="error-message">
+                    <% if (authError) { %>
+                        <div id="customToast" class="custom-toast hide">
+                            <%= authError %>
+                        </div>
+                        <script>
+                            toastr.error(`<%= authError %>`)
+                        </script>
+                        <% } %>
+                            <% if (validationErrors && validationErrors.length> 0) { %>
+                                <% validationErrors.forEach(error=> { %>
+                                    <script>
+                                        toastr.error(`<%= error.msg %>`)
+                                    </script>
+                                    <% }); %>
+                                        <% } %>
+                </div>
+                <div class="input-div">
+                    <input type="password" placeholder="Digite sua senha" id="password" name="password">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-div">
+                    <button class="btn-on" type="submit">Acessar</button>
+                </div>
+            </form>
+            <div class="div-auth-links">
+                <a href="/register" class="auth-links">Não possui conta? criar</a>
+            </div>
+        </div>
+        <!-- <div class="auth-right">
+            <img src="/img/auth-book.svg" alt="auth" />
+        </div> -->
+    </div>
+    <% include footer.ejs %>

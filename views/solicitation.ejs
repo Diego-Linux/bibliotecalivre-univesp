@@ -1,0 +1,103 @@
+<% include header.ejs %>
+
+    <div class="trade-container">
+        <div class="my-books">
+            <div>
+                <a href="#" style="color:crimson; text-decoration:underline" 
+                onclick="history.back()">Voltar</a>
+                </p>
+            </div>
+            <br/>
+            <div>
+                <p>
+                    <strong>Importante:</strong>
+                    Ao iniciar um processo de troca de livros, é importante estar ciente de que existe um prazo para
+                    cancelamento antes da aceitação pelo outro usuário. Após a aceitação, só é possível cancelar a troca
+                    através de um pedido ao administrador, acarretando na perda de créditos. Essa medida não apenas
+                    afeta a sua experiência, mas também prejudica a sua reputação no sistema de trocas. Portanto, é
+                    fundamental tomar decisões cuidadosas durante todo o processo para evitar problemas futuros.
+                </p>
+            </div>
+            <br />
+            <label for="booksender_id" style="color:rgb(75, 63, 65); font-weight:bold;">
+                Selecione seu livro para troca:
+            </label>
+            <select id="selectBook">
+                <% myBooks.forEach(myBook=> { %>
+                    <option value="<%= myBook.id %>">
+                        <%= myBook.name %>
+                    </option>
+                    <% }); %>
+            </select>
+            <br /><br />
+            <button class="btn-confirm" id="openModalBtn">Solicitar</button>
+        </div>
+
+        <div class="other-user-book">
+            <div class="other-user-book-details">
+                <h3>
+                    <%= tradeBook.name %>
+                </h3><br />
+                <p>Proprietário: <%= tradeBook.user.name %>
+                </p><br />
+                <div class="book-image">
+                    <img src="/<%= tradeBook.image %>" alt="">
+                </div>
+                <!-- Adicione mais detalhes conforme necessário -->
+            </div>
+        </div>
+    </div>
+    <!-- Modal de exclusão -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModalBtn">&times;</span>
+            <h2>Deseja confirmar a solicitação?</h2>
+            <div class="modal-buttons">
+                <form id="solicitationForm" action="/trade/new" method="POST">
+                    <input type="hidden" name="receiver_id" value="<%= tradeBook.user.id %>">
+                    <input type="hidden" name="sender_id" value="<%= req.session.userId %>">
+                    <input type="hidden" name="bookreceiver_id" value="<%= tradeBook.id %>">
+                    <input type="hidden" id="booksender_id" name="booksender_id" value="">
+                    <button type="submit" class="btn-confirm" id="confirmRequestBtn">Confirmar</button>
+                </form>
+                <div>
+                    <button id="cancelRequestBtn" class="btn-cancel">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% include footer.ejs %>
+        <script>
+            document.getElementById('openModalBtn').addEventListener('click', function () {
+                var selectedValue = document.getElementById('selectBook').value;
+                document.getElementById('booksender_id').value = selectedValue;
+                console.log(selectedValue); // Verifica se o valor está sendo capturado corretamente
+            });
+            function openModal() {
+                var modal = document.getElementById('modal');
+                modal.style.display = 'block'; // Exibe o modal
+            }
+
+            // Função para fechar o modal
+            function closeModal() {
+                var modal = document.getElementById('modal');
+                modal.style.display = 'none'; // Oculta o modal
+            }
+
+            // Função para confirmar a exclusão
+            function confirmSolicitation() {
+                var form = document.getElementById('solicitationForm');
+                form.submit(); // Submete o formulário para a rota de exclusão
+                closeModal(); // Fecha o modal após a confirmação
+            }
+
+            // Função para cancelar a exclusão
+            function cancelSolicitation() {
+                closeModal(); // Fecha o modal ao cancelar
+            }
+            // Adiciona eventos aos botões
+            document.getElementById('openModalBtn').addEventListener('click', openModal);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('confirmRequestBtn').addEventListener('click', confirmSolicitation);
+            document.getElementById('cancelRequestBtn').addEventListener('click', cancelSolicitation);
+        </script>

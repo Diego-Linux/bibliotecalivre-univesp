@@ -1,0 +1,140 @@
+<% include header.ejs %>
+
+    <div class="main-content">
+        <% if (books.length===0) { %>
+            <p style="margin-top:40px; color:crimson; margin-left:80px; font-style:italic;">
+               Lembre-se de que os livros dependem da aprovação de um administrador para serem exibidos.
+            </p>
+            <% } %>
+                <h3 style="margin-top:30px; color:crimson; margin-left:80px;">
+                    Meus livros</h3><br />
+                <p>Página: </p>
+                <div class="div-pagination">
+                    <ul class="pagination">
+                        <% for (let i=1; i <=totalPages; i++) { %>
+                            <li class="page-item <%= currentPage == i ? 'active' : '' %>">
+                                <a class="page-link" href="/mybooks?page=<%= i %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                            <% } %>
+                    </ul>
+                </div>
+                <form action="/mybooks" method="GET">
+                    <div class="search-container">
+                        <div class="search-div">
+                            <select name="category" id="category" class="search-select" onchange="this.form.submit()">
+                                <option value="">Todas as categorias</option>
+                                <option value="Geral" <% if (selectedCategory==='Geral' ) { %>selected<% } %>>Geral
+                                </option>
+                                <% categories.forEach(category=> { %>
+                                    <option value="<%= category %>" <% if (category===selectedCategory) { %>selected<% }
+                                            %>><%= category %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+                        <div class="search-div">
+                            <input class="search-input" placeholder="Digite o título do livro que procura" name="search"
+                                id="search">
+                        </div>
+                        <div class="search-div">
+                            <button type="submit" class="btn-search">Pesquisar</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Código</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% books.forEach(book=> { %>
+                                <tr>
+                                    <td><a href="/book/<%= book.id %>" class="table-link">
+                                            <%= book.name %>
+                                        </a></td>
+                                    <td>
+                                        <%= book.author %>
+                                    </td>
+                                    <td>
+                                        <%= book.id %>
+                                    </td>
+                                    <td>
+                                        <!-- <button class="table-btn-edit" data-id="<%= book.id %>">Editar</button> -->
+                                        <button class="table-btn-remove" data-id="<%= book.id %>">Remover</button>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+    </div>
+
+    <% include footer.ejs %>
+
+        <!-- Modal de exclusão -->
+        <div class="modal" id="modal-delete">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModalBtn">&times;</span>
+                <h2>Deseja remover este livro?</h2>
+                <div class="modal-buttons">
+                    <form id="deleteForm" method="POST">
+                        <button type="submit" class="btn-confirm" id="confirmRequestBtn">Confirmar</button>
+                    </form>
+                    <div>
+                        <button id="cancelRequestBtn" class="btn-cancel">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Script para abrir e fechar o modal -->
+        <script>
+            const modal = document.getElementById('modal-delete');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const confirmRequestBtn = document.getElementById('confirmRequestBtn');
+            const cancelRequestBtns = document.querySelectorAll('.btn-cancel');
+
+            // Abre o modal ao clicar no botão de remover
+            const removeButtons = document.querySelectorAll('.table-btn-remove');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    modal.style.display = 'block';
+                    // Configura o form do modal para enviar ao endpoint correto
+                    const form = document.getElementById('deleteForm');
+                    form.action = '/book/remove/' + this.dataset.id;
+                });
+            });
+
+            // Fecha o modal ao clicar no botão de fechar
+            closeModalBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Fecha o modal ao clicar no botão de cancelar
+            cancelRequestBtns.forEach(button => {
+                button.addEventListener('click', function () {
+                    modal.style.display = 'none';
+                });
+            });
+
+            // Fecha o modal após a confirmação
+            confirmRequestBtn.addEventListener('click', function () {
+                const form = document.getElementById('deleteForm');
+                form.submit(); // Submete o formulário para a rota de exclusão
+                modal.style.display = 'none';
+            });
+
+            // Fecha o modal se o usuário clicar fora dele
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        </script>

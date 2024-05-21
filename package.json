@@ -1,0 +1,28 @@
+{
+  "name": "blv2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ejs": "^2.6.2",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
+    "expressjs": "^1.0.1",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.9.6",
+    "nodemon": "^3.1.0",
+    "sequelize": "^6.37.3"
+  }
+}

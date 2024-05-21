@@ -1,0 +1,51 @@
+<% include header.ejs %>
+<br/>
+    <div class="auth-container">
+        <div class="auth-left">
+            <h1>Biblioteca livre</h1>
+            <h2>Criar conta</h2>
+            <form action="/register" method="POST">
+                <div class="input-div">
+                    <input type="text" placeholder="Nome de usuário" id="name" name="name" value="<%= lastTypedValues && lastTypedValues.name ? lastTypedValues.name : '' %>">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="error-message">
+                    <% if (authError) { %>
+                        <div id="customToast" class="custom-toast hide"><%= authError %></div>
+                        <script>
+                            toastr.error(`<%= authError %>`)
+                        </script>
+                    <% } %>
+                    <% if (validationErrors && validationErrors.length > 0) { %>
+                        <% validationErrors.forEach(error => { %>
+                            <script>
+                                toastr.error(`<%= error.msg %>`)
+                            </script>
+                        <% }); %>
+                    <% } %>
+                </div>
+                <div class="input-div">
+                    <input type="email" placeholder="E-mail de usuário" id="email" name="email" value="<%= lastTypedValues && lastTypedValues.email ? lastTypedValues.email : '' %>">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-div">
+                    <input type="password" placeholder="Digite sua senha" id="password" name ="password">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-div">
+                    <input type="password" placeholder="Confirme a senha" id="passwordConfirm" name ="passwordConfirm">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <div class="input-div">
+                    <button class="btn-on" type="submit">Criar</button>
+                </div>
+            </form>
+            <div class="div-auth-links">
+                <a href="/login" class="auth-links">Já possui conta? Acessar</a>
+            </div>
+        </div>
+        <!-- <div class="auth-right">
+            <img src="/img/auth-book.svg" alt="auth" />
+        </div> -->
+    </div>
+    <% include footer.ejs %>
