@@ -13,5 +13,4 @@ const Trade = database.define('trade', {
         allowNull: false
     }
 });
-// Trade.sync({ force: true })
 module.exports = Trade;

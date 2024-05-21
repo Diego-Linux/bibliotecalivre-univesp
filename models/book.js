@@ -39,6 +39,5 @@ const Book = database.define('book', {
 });
 
 Book.belongsTo(User, { foreignKey: 'userId' });
-// Book.sync({force:true})
 module.exports = Book;
 

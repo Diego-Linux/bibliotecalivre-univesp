@@ -23,6 +23,5 @@ user_trade.belongsTo(Book, { foreignKey: 'bookreceiver_id', as: 'bookreceiver' }
 
 // Associação entre user_trade e Trade
 user_trade.belongsTo(Trade, { foreignKey: 'trade_id', as: 'trade' });
-// user_trade.sync({ force: true })
 
 module.exports = user_trade;
